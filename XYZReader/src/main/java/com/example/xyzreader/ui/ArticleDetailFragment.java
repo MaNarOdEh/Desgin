@@ -193,20 +193,34 @@ public class ArticleDetailFragment extends Fragment implements
             txt_recycle.setLayoutManager( new LinearLayoutManager(getActivity()));
             final String arr=mCursor.getString(ArticleLoader.Query.BODY);
             final RecyclePargraph[] recyclePargraph = new RecyclePargraph[1];
-            class LockTask extends AsyncTask<String, String, String[]> {
+          /*  class LockTask extends AsyncTask<String, String, String[]> {
                 @Override
                 protected String[] doInBackground(String... params) {
                     // This is a long-running operation, which makes
                     // the lock last for a long time
-                    String mDataset []= params[0].split("\n\n");
-
-                     recyclePargraph[0] =new RecyclePargraph(mDataset);
                     return  mDataset;
                 }
-            }
-            new LockTask().doInBackground(arr);
-            recyclePargraph[0].notifyDataSetChanged();
-            txt_recycle.setAdapter(recyclePargraph[0]);
+            }*/
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        synchronized (this) {
+                            String mDataset[] = arr.split("\n\n");
+                            recyclePargraph[0] = new RecyclePargraph(mDataset);
+                            recyclePargraph[0].notifyDataSetChanged();
+                            txt_recycle.setAdapter(recyclePargraph[0]);
+                        }
+                    }catch(Exception e){
+                        recyclePargraph[0] = new RecyclePargraph(arr);
+                        recyclePargraph[0].notifyDataSetChanged();
+                        txt_recycle.setAdapter(recyclePargraph[0]);
+                    }
+                }
+            }).start();
+
+           // new LockTask().doInBackground(arr);
+
 
 
 

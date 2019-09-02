@@ -30,7 +30,7 @@ public class RecyclePargraph extends RecyclerView.Adapter<RecyclePargraph.MyView
             if (myDataset != null) {
 
                 //new  LockTask().doInBackground(myDataset);
-              mDataset = myDataset.split(".");
+              mDataset = myDataset.split("\n\n");
             } else {
                 mDataset = new String[1];
             }
