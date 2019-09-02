@@ -48,6 +48,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
+            android:paddingTop="30dp"
             android:textColor="#6000"
             android:textSize="13sp"
             android:maxLines="2"
