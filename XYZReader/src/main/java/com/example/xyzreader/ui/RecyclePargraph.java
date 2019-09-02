@@ -1,6 +1,8 @@
 package com.example.xyzreader.ui;
 
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,9 +25,31 @@ public class RecyclePargraph extends RecyclerView.Adapter<RecyclePargraph.MyView
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public RecyclePargraph(String[] myDataset) {
-            mDataset = myDataset;
+        public RecyclePargraph(String myDataset) {
+          //  StringTokenizer stringTokenizer=new StringTokenizer(myDataset,"\n\n|\n|.");
+            if (myDataset != null) {
+
+                //new  LockTask().doInBackground(myDataset);
+              mDataset = myDataset.split(".");
+            } else {
+                mDataset = new String[1];
+            }
+
         }
+
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public RecyclePargraph(String myDataset[]) {
+        //  StringTokenizer stringTokenizer=new StringTokenizer(myDataset,"\n\n|\n|.");
+        if (myDataset != null) {
+
+            //new  LockTask().doInBackground(myDataset);
+            mDataset = myDataset;
+        } else {
+            mDataset = new String[1];
+        }
+
+    }
+
 
         // Create new views (invoked by the layout manager)
         @Override
@@ -43,7 +67,7 @@ public class RecyclePargraph extends RecyclerView.Adapter<RecyclePargraph.MyView
         public void onBindViewHolder(MyViewHolder holder, int position) {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
-            holder.textView.setText(mDataset[position]);
+            holder.textView.setText((mDataset[position]));
 
         }
 

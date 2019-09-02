@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
@@ -171,7 +172,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
       //  TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-         RecyclerView txt_recycle= (RecyclerView) mRootView.findViewById(R.id.txt_recycle);
+         final RecyclerView txt_recycle= (RecyclerView) mRootView.findViewById(R.id.txt_recycle);
 
 
        // bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
@@ -186,17 +187,32 @@ public class ArticleDetailFragment extends Fragment implements
                             + " by "
                             + mCursor.getString(ArticleLoader.Query.AUTHOR)).toString();
             Date publishedDate = parsePublishedDate();
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE)+"\n"+publishedDate+"\n"+author);
-          //  Log.d("BODY",(mCursor.getString((ArticleLoader.Query.TITLE))));
-            String arr[]=mCursor.getString(ArticleLoader.Query.BODY).split("\n");
-            RecyclePargraph recyclePargraph=new RecyclePargraph(arr);
-            txt_recycle.setAdapter(recyclePargraph);
-            txt_recycle.setHasFixedSize(true);
 
-            // use a linear layout manager
+            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE)+"\n"+publishedDate+"\n"+author);
+            txt_recycle.setHasFixedSize(true);
             txt_recycle.setLayoutManager( new LinearLayoutManager(getActivity()));
-          //  bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
-            //Log.d("TITLE",(mCursor.getString(ArticleLoader.Query.BODY)));
+            final String arr=mCursor.getString(ArticleLoader.Query.BODY);
+            final RecyclePargraph[] recyclePargraph = new RecyclePargraph[1];
+            class LockTask extends AsyncTask<String, String, String[]> {
+                @Override
+                protected String[] doInBackground(String... params) {
+                    // This is a long-running operation, which makes
+                    // the lock last for a long time
+                    String mDataset []= params[0].split("\n\n");
+
+                     recyclePargraph[0] =new RecyclePargraph(mDataset);
+                    return  mDataset;
+                }
+            }
+            new LockTask().doInBackground(arr);
+            recyclePargraph[0].notifyDataSetChanged();
+            txt_recycle.setAdapter(recyclePargraph[0]);
+
+
+
+
+
+
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
                         @Override
