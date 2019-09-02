@@ -114,24 +114,7 @@ public class ArticleDetailFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
-       // mDrawInsetsFrameLayout = (DrawInsetsFrameLayout)
-              //  mRootView.findViewById(R.id.draw_insets_frame_layout);
-     /*   mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
-            @Override
-            public void onInsetsChanged(Rect insets) {
-                mTopInset = insets.top;
-            }
-        });*/
 
-      //  mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
-      /*  mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-            @Override
-            public void onScrollChanged() {
-                mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-                updateStatusBar();
-            }
-        });*/
 
        mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
 
@@ -164,7 +147,6 @@ public class ArticleDetailFragment extends Fragment implements
                     (int) (Color.blue(mMutedColor) * 0.9));
         }
         mStatusBarColorDrawable.setColor(color);
-    //    mDrawInsetsFrameLayout.setInsetBackground(mStatusBarColorDrawable);
     }
 
     static float progress(float v, float min, float max) {
@@ -202,15 +184,21 @@ public class ArticleDetailFragment extends Fragment implements
 
 
         bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+        bodyView.setVisibility(View.VISIBLE);
 
         if (mCursor != null) {
-            mRootView.setAlpha(0);
-            mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
+            String author = Html.fromHtml(
+                    DateUtils.getRelativeTimeSpanString(
+                            mCursor.getLong(ArticleLoader.Query.PUBLISHED_DATE),
+                            System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+                            DateUtils.FORMAT_ABBREV_ALL).toString()
+                            + " by "
+                            + mCursor.getString(ArticleLoader.Query.AUTHOR)).toString();
             Date publishedDate = parsePublishedDate();
-
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE)+"\n"+publishedDate);
+            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE)+"\n"+publishedDate+"\n"+author);
+          //  Log.d("BODY",(mCursor.getString((ArticleLoader.Query.TITLE))));
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+            //Log.d("TITLE",(mCursor.getString(ArticleLoader.Query.BODY)));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
                         @Override
@@ -220,7 +208,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 Palette p = Palette.generate(bitmap, 12);
                                 mMutedColor = p.getDarkMutedColor(0xFF333333);
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
+                               mRootView.findViewById(R.id.meta_bar)
                                         .setBackgroundColor(mMutedColor);
                                 updateStatusBar();
                             }
@@ -232,9 +220,9 @@ public class ArticleDetailFragment extends Fragment implements
                         }
                     });
         } else {
-            mRootView.setVisibility(View.GONE);
-            titleView.setText("N/A");
-            bodyView.setText("N/A");
+          //  mRootView.setVisibility(View.GONE);
+           // titleView.setText("N/A");
+            //bodyView.setText("N/A");
         }
     }
 

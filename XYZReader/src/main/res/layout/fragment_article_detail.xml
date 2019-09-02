@@ -31,7 +31,8 @@
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:paddingTop="10dp"
-                android:textColor="@color/colorBlack" />
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="false"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
