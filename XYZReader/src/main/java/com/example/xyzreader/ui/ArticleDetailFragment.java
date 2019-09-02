@@ -19,6 +19,8 @@ import java.util.GregorianCalendar;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
@@ -104,7 +106,6 @@ public class ArticleDetailFragment extends Fragment implements
             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
 
-
        mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
@@ -169,11 +170,12 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
-        TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+      //  TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+         RecyclerView txt_recycle= (RecyclerView) mRootView.findViewById(R.id.txt_recycle);
 
 
-        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
-        bodyView.setVisibility(View.VISIBLE);
+       // bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+      //  bodyView.setVisibility(View.VISIBLE);
 
         if (mCursor != null) {
             String author = Html.fromHtml(
@@ -186,7 +188,14 @@ public class ArticleDetailFragment extends Fragment implements
             Date publishedDate = parsePublishedDate();
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE)+"\n"+publishedDate+"\n"+author);
           //  Log.d("BODY",(mCursor.getString((ArticleLoader.Query.TITLE))));
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+            String arr[]=mCursor.getString(ArticleLoader.Query.BODY).split("\n");
+            RecyclePargraph recyclePargraph=new RecyclePargraph(arr);
+            txt_recycle.setAdapter(recyclePargraph);
+            txt_recycle.setHasFixedSize(true);
+
+            // use a linear layout manager
+            txt_recycle.setLayoutManager( new LinearLayoutManager(getActivity()));
+          //  bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
             //Log.d("TITLE",(mCursor.getString(ArticleLoader.Query.BODY)));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
@@ -243,6 +252,4 @@ public class ArticleDetailFragment extends Fragment implements
         mCursor = null;
         bindViews();
     }
-
-
 }

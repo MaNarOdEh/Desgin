@@ -45,7 +45,11 @@ public class ArticleDetailActivity extends ActionBarActivity
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                             View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
+
         setContentView(R.layout.activity_article_detail);
+
+
+
         imageView=(ImageView)findViewById(R.id.action_up);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -16,7 +16,8 @@
         app:expandedTitleMargin="16dp"
         app:expandedTitleMarginBottom="80dp"
         app:layout_scrollFlags="scroll"
-        app:toolbarId="@+id/toolbar">
+        app:toolbarId="@+id/toolbar"
+        android:elevation="@dimen/toolbar_elevation">
 
         <FrameLayout
             android:layout_width="match_parent"
